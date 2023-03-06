@@ -3,7 +3,7 @@ use wry::{
   application::{
     event::{Event, StartCause, WindowEvent},
     event_loop::{ControlFlow, EventLoop},
-    window::WindowBuilder,
+    window::WindowBuilder, dpi::{PhysicalSize, PhysicalPosition}, platform::windows::WindowBuilderExtWindows,
   },
   webview::WebViewBuilder,
 };
@@ -19,7 +19,9 @@ fn main() -> wry::Result<()> {
     let args = Args::parse();
 
     let event_loop = EventLoop::new();
-    let mut window_builder = WindowBuilder::new().with_decorations(false);
+    let mut window_builder = WindowBuilder::new()
+      .with_decorations(false)
+      .with_resizable(true);
     
     let window = window_builder.build(&event_loop)?;
     #[cfg(target_os = "macos")] {
@@ -47,6 +49,12 @@ fn main() -> wry::Result<()> {
             }
         }
     }
+
+    #[cfg(target_os="windows")]
+    {
+      window.set_decorations(true);
+    }
+
     let _webview = WebViewBuilder::new(window)?
       .with_url(args.url.as_str())?
       .build()?;
