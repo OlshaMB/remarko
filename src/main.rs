@@ -1,19 +1,25 @@
 use std::net::{SocketAddrV4, Ipv4Addr};
+use wry::{
+  application::{
+    event::{Event, StartCause, WindowEvent},
+    event_loop::{ControlFlow, EventLoop},
+    window::WindowBuilder,
+  },
+  webview::WebViewBuilder,
+};
+use clap::Parser;
+mod args;
+use args::*;
 
+#[cfg(target_os = "macos")]
 #[macro_use(msg_send, sel)]
 extern crate objc;
 
 fn main() -> wry::Result<()> {
-    use wry::{
-      application::{
-        event::{Event, StartCause, WindowEvent},
-        event_loop::{ControlFlow, EventLoop},
-        window::WindowBuilder,
-      },
-      webview::WebViewBuilder,
-    };
+    let args = Args::parse();
+
     let event_loop = EventLoop::new();
-    let mut window_builder = WindowBuilder::new();
+    let mut window_builder = WindowBuilder::new().with_decorations(false);
     
     let window = window_builder.build(&event_loop)?;
     #[cfg(target_os = "macos")] {
@@ -42,7 +48,7 @@ fn main() -> wry::Result<()> {
         }
     }
     let _webview = WebViewBuilder::new(window)?
-      .with_url("http://localhost:8090/README.md")?
+      .with_url(args.url.as_str())?
       .build()?;
     
 
