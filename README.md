@@ -1,6 +1,4 @@
 # remarko
-> **Warning**
-> This README is only a template for future real README
 
 ![Crates.io](https://img.shields.io/crates/v/remarko?style=flat-square)
 ![Crates.io](https://img.shields.io/crates/l/remarko?style=flat-square)
