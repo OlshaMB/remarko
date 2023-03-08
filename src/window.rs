@@ -42,25 +42,25 @@ pub fn create_window(event_loop: &EventLoop<()>) -> wry::Result<Window> {
 }
 fn create_menu() -> MenuBar {
     let mut root = MenuBar::new();
-    let mut marko = MenuBar::new();
-    marko.add_item(
+    let mut remarko = MenuBar::new();
+    remarko.add_item(
         MenuItemAttributes::new("Reload")
             .with_accelerators(
                 &Accelerator::from_str("cmd+r").unwrap()
             )
-            .with_id(MenuId::new("marko.reload"))
+            .with_id(MenuId::new("remarko.reload"))
     );
-    marko.add_item(
+    remarko.add_item(
         MenuItemAttributes::new("Reset")
             .with_accelerators(
                 &Accelerator::from_str("shift+cmd+r").unwrap()
             )
-            .with_id(MenuId::new("marko.reset"))
+            .with_id(MenuId::new("remarko.reset"))
     );
-    marko.add_native_item(wry::application::menu::MenuItem::Minimize);
-    marko.add_native_item(wry::application::menu::MenuItem::Hide);
-    marko.add_native_item(wry::application::menu::MenuItem::CloseWindow);
-    marko.add_native_item(wry::application::menu::MenuItem::Quit);
-    root.add_submenu("marko", true, marko);
+    remarko.add_native_item(wry::application::menu::MenuItem::Minimize);
+    remarko.add_native_item(wry::application::menu::MenuItem::Hide);
+    remarko.add_native_item(wry::application::menu::MenuItem::CloseWindow);
+    remarko.add_native_item(wry::application::menu::MenuItem::Quit);
+    root.add_submenu("remarko", true, remarko);
     root
 }

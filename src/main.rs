@@ -1,5 +1,23 @@
+//! # remarko
+//! 
+//! A small webview window for previewing makdown and localhost.
+//! 
+//! ## Instalation
+//! ### Cargo
+//! `cargo install remarko`
+//! ## Usage
+//! Use the command remarko:<br>
+//! `remarko <URL OR MARKDOWN FILE>`<br>
+//! **Examples**:<br>
+//!  `remarko https://docs.rs/wry` <br>
+//!  `remarko http://localhost:3000` <br>
+//!  `remarko README.md`
+//! > If you give it a **markdown file** it **will** automaticly **start a live server**.
+//! ## Contributions
+//! **Issues**, **Ideas** and **Contributions** are [welcome]()!
 use std::net::{SocketAddrV4, Ipv4Addr};
-use markdown::create_markdown_server;
+
+use markdown::{create_markdown_server};
 use window::create_window;
 use wry::{
   application::{
@@ -25,12 +43,14 @@ mod markdown;
 
 fn main() -> wry::Result<()> {
     let args = Args::parse();
+    let mut server = Option::None;
     let url = if args.url.ends_with(".md") {
-      format!("http://localhost:3456/{}", args.url)
+      server = Option::Some(create_markdown_server(args.url.as_str()));
+      format!("http://localhost:3456/")
     } else {
       args.url
     };
-    create_markdown_server();
+    
     let event_loop = EventLoop::new();
     
     let window = create_window(&event_loop);
@@ -46,12 +66,15 @@ fn main() -> wry::Result<()> {
         Event::WindowEvent {
           event: WindowEvent::CloseRequested,
           ..
-        } => *control_flow = ControlFlow::Exit,
+        } => {
+          println!("{:#?}", server);
+          *control_flow = ControlFlow::Exit
+        },
         Event::MenuEvent { window_id, menu_id, origin, ..} => {
-          if MenuId::new("marko.reload").0==menu_id.0 {
+          if MenuId::new("remarko.reload").0==menu_id.0 {
             _webview.load_url(_webview.url().as_str());
           }
-          if MenuId::new("marko.reset").0==menu_id.0 {
+          if MenuId::new("remarko.reset").0==menu_id.0 {
             _webview.load_url(url.as_str());
           }
         }
