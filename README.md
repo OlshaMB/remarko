@@ -2,9 +2,8 @@
 > **Warning**
 > This README is only a template for future real README
 
-![docs.rs](https://img.shields.io/docsrs/remarko?style=flat-square)
-![Crates.io](https://img.shields.io/crates/l/remarko?style=flat-square)
 ![Crates.io](https://img.shields.io/crates/v/remarko?style=flat-square)
+![Crates.io](https://img.shields.io/crates/l/remarko?style=flat-square)
 
 A small webview window for previewing makdown and localhost.
 

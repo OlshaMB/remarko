@@ -9,7 +9,7 @@ authors = [
     "vetor1dev"
 ]
 licence = "Zlib"
-documentation = "https://docs.rs/remarko"
+documentation = "https://github.com/OlshaMB/remarko"
 readme = "README.md"
 homepage = "https://github.com/OlshaMB/remarko"
 repository = "https://github.com/OlshaMB/remarko"
