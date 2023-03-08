@@ -1,6 +1,6 @@
 [package]
 name = "remarko"
-version = "0.1.0"
+version = "0.1.1"
 description = "A small webview window for previewing makdown and localhost."
 edition = "2021"
 authors = [
