@@ -8,7 +8,7 @@ authors = [
     "Vova-max-png",
     "vetor1dev"
 ]
-licence = "Zlib"
+licence = "zlib License"
 documentation = "https://github.com/OlshaMB/remarko"
 readme = "README.md"
 homepage = "https://github.com/OlshaMB/remarko"
