@@ -1,62 +1,41 @@
 use std::net::{SocketAddrV4, Ipv4Addr};
+use markdown::create_markdown_server;
+use window::create_window;
 use wry::{
   application::{
     event::{Event, StartCause, WindowEvent},
     event_loop::{ControlFlow, EventLoop},
-    window::WindowBuilder, dpi::{PhysicalSize, PhysicalPosition}, platform::windows::WindowBuilderExtWindows,
+    window::WindowBuilder, dpi::{PhysicalSize, PhysicalPosition}, menu::MenuId,
   },
   webview::WebViewBuilder,
 };
 use clap::Parser;
-mod args;
 use args::*;
+
 
 #[cfg(target_os = "macos")]
 #[macro_use(msg_send, sel)]
 extern crate objc;
 
+
+mod args;
+mod window;
+mod markdown;
+
+
 fn main() -> wry::Result<()> {
     let args = Args::parse();
-
+    let url = if args.url.ends_with(".md") {
+      format!("http://localhost:3456/{}", args.url)
+    } else {
+      args.url
+    };
+    create_markdown_server();
     let event_loop = EventLoop::new();
-    let mut window_builder = WindowBuilder::new()
-      .with_decorations(false)
-      .with_resizable(true);
     
-    let window = window_builder.build(&event_loop)?;
-    #[cfg(target_os = "macos")] {
-        use wry::application::platform::macos::WindowExtMacOS;
-        use cocoa::appkit::NSWindow;
-        use cocoa::appkit::NSWindowStyleMask;
-        use cocoa::appkit::NSWindowButton::NSWindowFullScreenButton;
-        
-        let ns_window = window.ns_window() as cocoa::base::id;
-        unsafe {
-            ns_window.setStyleMask_(
-                NSWindowStyleMask::NSResizableWindowMask |
-                 NSWindowStyleMask::NSClosableWindowMask | 
-                 NSWindowStyleMask::NSFullSizeContentViewWindowMask | 
-                 NSWindowStyleMask::NSTitledWindowMask
-                );
-            ns_window.setTitleVisibility_(cocoa::appkit::NSWindowTitleVisibility::NSWindowTitleHidden);
-            ns_window.setTitlebarAppearsTransparent_(1);
-            ns_window.setMovableByWindowBackground_(1);
-            {
-                use objc::sel_impl;
-                let _: () = msg_send![ns_window.standardWindowButton_(cocoa::appkit::NSWindowButton::NSWindowMiniaturizeButton), setHidden: 1];
-                let _: () = msg_send![ns_window.standardWindowButton_(cocoa::appkit::NSWindowButton::NSWindowZoomButton), setHidden: 1];
-                let _: () = msg_send![ns_window.standardWindowButton_(cocoa::appkit::NSWindowButton::NSWindowCloseButton), setHidden: 1];
-            }
-        }
-    }
-
-    #[cfg(target_os="windows")]
-    {
-      window.set_decorations(true);
-    }
-
-    let _webview = WebViewBuilder::new(window)?
-      .with_url(args.url.as_str())?
+    let window = create_window(&event_loop);
+    let _webview = WebViewBuilder::new(window?)?
+      .with_url(url.as_str())?
       .build()?;
     
 
@@ -68,6 +47,14 @@ fn main() -> wry::Result<()> {
           event: WindowEvent::CloseRequested,
           ..
         } => *control_flow = ControlFlow::Exit,
+        Event::MenuEvent { window_id, menu_id, origin, ..} => {
+          if MenuId::new("marko.reload").0==menu_id.0 {
+            _webview.load_url(_webview.url().as_str());
+          }
+          if MenuId::new("marko.reset").0==menu_id.0 {
+            _webview.load_url(url.as_str());
+          }
+        }
         _ => (),
       }
     });

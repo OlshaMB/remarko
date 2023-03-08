@@ -6,6 +6,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+tokio = { version = "1.14.0", features = ["rt", "macros", "io-util", "process"] }
 wry = "0.27.0"
 clap = { version = "4.1.8", features = ["derive"] }
 aurelius = "0.7.5"
