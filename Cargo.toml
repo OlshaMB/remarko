@@ -1,6 +1,7 @@
 [package]
 name = "remarko"
 version = "0.1.0"
+description = "A small webview window for previewing makdown and localhost."
 edition = "2021"
 authors = [
     "OlshaMB",
@@ -14,6 +15,7 @@ homepage = "https://github.com/OlshaMB/remarko"
 repository = "https://github.com/OlshaMB/remarko"
 license-file = "LICENSE"
 keywords = ["markdown", "webview", "cli"]
+categories = ["command-line-utilities"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
