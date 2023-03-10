@@ -17,7 +17,7 @@
 //! **Issues**, **Ideas** and **Contributions** are [welcome]()!
 use std::net::{SocketAddrV4, Ipv4Addr};
 
-use markdown::{create_markdown_server};
+use markdown::{ MDServer};
 use window::create_window;
 use wry::{
   application::{
@@ -40,13 +40,14 @@ mod args;
 mod window;
 mod markdown;
 
-
-fn main() -> wry::Result<()> {
+#[tokio::main]
+async fn main() -> wry::Result<()> {
     let args = Args::parse();
     let mut server = Option::None;
     let url = if args.url.ends_with(".md") {
-      server = Option::Some(create_markdown_server(args.url.as_str()));
-      format!("http://localhost:3456/")
+      server = Option::Some(MDServer::new(&args.url).await);
+      server.as_mut().unwrap().watch().await;
+      format!("http://localhost:{}", server.as_ref().unwrap().server.addr().port())
     } else {
       args.url
     };
@@ -58,7 +59,7 @@ fn main() -> wry::Result<()> {
       .with_url(url.as_str())?
       .build()?;
     
-
+    
     event_loop.run(move |event, _, control_flow| {
       *control_flow = ControlFlow::Wait;
   
@@ -67,7 +68,7 @@ fn main() -> wry::Result<()> {
           event: WindowEvent::CloseRequested,
           ..
         } => {
-          println!("{:#?}", server);
+          println!("{:?}",server);
           *control_flow = ControlFlow::Exit
         },
         Event::MenuEvent { window_id, menu_id, origin, ..} => {
@@ -81,4 +82,5 @@ fn main() -> wry::Result<()> {
         _ => (),
       }
     });
+    
 }
