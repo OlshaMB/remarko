@@ -1,4 +1,4 @@
-# remarko
+# remarko.md
 
 ![Crates.io](https://img.shields.io/crates/v/remarko?style=flat-square)
 ![Crates.io](https://img.shields.io/crates/l/remarko?style=flat-square)
